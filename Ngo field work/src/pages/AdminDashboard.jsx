@@ -40,7 +40,7 @@ export default function AdminDashboard() {
       if (filters.status) params.status = filters.status;
       if (filters.activityType) params.activityType = filters.activityType;
       if (filters.startDate) params.startDate = filters.startDate;
-      const res = await api.get("/submissions/all", { params });
+      const res = await api.get("/submissions/all", { params });//fetch submissions with filters and fetch summary data for analytics
       setSubmissions(res.data);
     } catch (err) {
       console.error(err);
@@ -56,7 +56,7 @@ export default function AdminDashboard() {
     setAiLoading(true);
     setAiResult(null);
     try {
-      const res = await api.post("/ai/summary", { start: aiDates.start, end: aiDates.end });
+      const res = await api.post("/ai/summary", { start: aiDates.start, end: aiDates.end });//call AI summary API
       setAiResult(res.data);
     } catch (err) {
       console.error(err);
@@ -95,10 +95,12 @@ export default function AdminDashboard() {
 <Tabs.Panel value="records">
 <Paper shadow="sm" radius="lg" p="xl" withBorder>
 <SimpleGrid cols={{ base: 2, sm: 3, lg: 6 }} mb="md">
-<TextInput placeholder="Search..." leftSection={<IconSearch size={14} />}
+
+<TextInput placeholder="Search..." leftSection={<IconSearch size={14} />}//search input for filtering submissions
 value={filters.search}
 onChange={(e) => setFilters({ ...filters, search: e.target.value })} />
-<TextInput placeholder="Region" value={filters.region}
+
+<TextInput placeholder="Region" value={filters.region}//region filter input
 onChange={(e) => setFilters({ ...filters, region: e.target.value })} />
 <Select placeholder="Status" clearable
 data={[
@@ -115,7 +117,7 @@ value: a, label: a.charAt(0).toUpperCase() + a.slice(1),
 value={["training","distribution","survey","meeting","other",""].includes(filters.activityType) ? filters.activityType : "other"}
 onChange={(val) => setFilters({ ...filters, activityType: val || "", customActivity: "" })} />
 {filters.activityType === "other" && (
-  <TextInput placeholder="Specify activity..." value={filters.customActivity || ""}
+  <TextInput placeholder="Specify activity..." value={filters.customActivity || ""}//input for custom activity type when "other" is selected
     onChange={(e) => setFilters({ ...filters, customActivity: e.target.value, activityType: e.target.value })} />
 )}
 <DateInput placeholder="From date" value={filters.startDate} clearable
@@ -182,7 +184,7 @@ series={[{ name: "Submissions", color: "violet.6" }]} tickLine="y" />
 <Paper shadow="sm" radius="lg" p="xl" withBorder>
 <Title order={5} mb="md" c="gray.7">Activity Type Breakdown</Title>
 {pieData.length === 0 ? <Text c="dimmed" size="sm">No data</Text> : (
-<PieChart h={250} data={pieData} withLabels withTooltip labelsType="percent" />
+<PieChart h={250} data={pieData} withLabels withTooltip labelsType="percent" />//pie chart for activity type distribution
 )}
 </Paper>
 <Paper shadow="sm" radius="lg" p="xl" withBorder>

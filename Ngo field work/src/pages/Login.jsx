@@ -21,7 +21,7 @@ export default function Login() {
     setError("");
     setLoading(true);
     try {
-      const res = await api.post("/auth/login", form);
+      const res = await api.post("/auth/login", form);//login api call
       login(res.data.token, res.data.user);
       navigate(res.data.user.role === "admin" ? "/admin" : "/worker");
     } catch (err) {
@@ -33,9 +33,9 @@ export default function Login() {
 
   const handleGoogle = async (credentialResponse) => {
     try {
-      const res = await api.post("/auth/google", { credential: credentialResponse.credential });
+      const res = await api.post("/auth/google", { credential: credentialResponse.credential });//google login api call
       login(res.data.token, res.data.user);
-      navigate(res.data.user.role === "admin" ? "/admin" : "/worker");
+      navigate(res.data.user.role === "admin" ? "/admin" : "/worker");//redirect based on role
     } catch {
       setError("Google login failed");
     }

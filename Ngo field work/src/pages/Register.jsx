@@ -23,7 +23,7 @@ export default function Register() {
     setError("");
     setLoading(true);
     try {
-      const res = await api.post("/auth/register", form);
+      const res = await api.post("/auth/register", form);//register api call
       login(res.data.token, res.data.user);
       navigate(res.data.user.role === "admin" ? "/admin" : "/worker");
     } catch (err) {
@@ -35,7 +35,7 @@ export default function Register() {
 
   const handleGoogle = async (credentialResponse) => {
     try {
-      const res = await api.post("/auth/google", { credential: credentialResponse.credential });
+      const res = await api.post("/auth/google", { credential: credentialResponse.credential });//google login api call
       login(res.data.token, res.data.user);
       navigate(res.data.user.role === "admin" ? "/admin" : "/worker");
     } catch {

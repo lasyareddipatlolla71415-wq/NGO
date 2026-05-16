@@ -38,7 +38,7 @@ export default function WorkerDashboard() {
   const fetchSubmissions = useCallback(async () => {
     setLoadingSubs(true);
     try {
-      const res = await api.get("/submissions/my");
+      const res = await api.get("/submissions/my");//fetch submissions for the logged in worker
       setSubmissions(res.data);
     } catch {
       notifications.show({ color: "red", title: "Error", message: "Could not load submissions" });
@@ -48,7 +48,7 @@ export default function WorkerDashboard() {
   }, []);
 
   useEffect(() => {
-    api.get("/submissions/my")
+    api.get("/submissions/my")//fetch submissions for the logged in worker
       .then((res) => setSubmissions(res.data))
       .catch(() => notifications.show({ color: "red", title: "Error", message: "Could not load submissions" }))
       .finally(() => setLoadingSubs(false));
@@ -84,7 +84,7 @@ export default function WorkerDashboard() {
 
   const handleEditSave = async () => {
     try {
-      await api.patch(`/submissions/${editSub._id}`, { status: editStatus, remark: editRemark });
+      await api.patch(`/submissions/${editSub._id}`, { status: editStatus, remark: editRemark });//update submission status and remark
       notifications.show({ color: "teal", title: "Updated!", message: "Submission updated." });
       closeEdit();
       fetchSubmissions();
