@@ -65,6 +65,8 @@ export default function AdminDashboard() {
     }
   };
 
+  const [selectedRegion, setSelectedRegion] = useState(null);
+
   const regionMap = submissions.reduce((acc, s) => { acc[s.region] = (acc[s.region] || 0) + 1; return acc; }, {});
   const barData = Object.entries(regionMap).map(([name, Submissions]) => ({ name, Submissions }));
   const activityMap = submissions.reduce((acc, s) => { acc[s.activityType] = (acc[s.activityType] || 0) + 1; return acc; }, {});
@@ -184,7 +186,33 @@ series={[{ name: "Submissions", color: "violet.6" }]} tickLine="y" />
 <Paper shadow="sm" radius="lg" p="xl" withBorder>
 <Title order={5} mb="md" c="gray.7">Activity Type Breakdown</Title>
 {pieData.length === 0 ? <Text c="dimmed" size="sm">No data</Text> : (
-<PieChart h={250} data={pieData} withLabels withTooltip labelsType="percent" />//pie chart for activity type distribution
+<Group align="center" gap="xl">
+<PieChart h={250} data={pieData} withLabels withTooltip labelsType="percent" />
+<Stack gap="sm" style={{ flex: 1 }}>
+{pieData.map((item, i) => {
+  const colors = ["violet","blue","teal","orange","pink"];
+  const total = pieData.reduce((a, b) => a + b.value, 0);
+  const pct = ((item.value / total) * 100).toFixed(0);
+  return (
+    <Box key={item.name}>
+      <Group justify="space-between" mb={4}>
+        <Group gap="xs">
+          <Box w={12} h={12} style={{ borderRadius: 3, background: `var(--mantine-color-${colors[i % colors.length]}-6)` }} />
+          <Text size="sm" tt="capitalize">{item.name}</Text>
+        </Group>
+        <Text size="sm" fw={600}>{item.value} <Text span size="xs" c="dimmed">({pct}%)</Text></Text>
+      </Group>
+      <Progress value={Number(pct)} color={colors[i % colors.length]} radius="xl" size="sm" />
+    </Box>
+  );
+})}
+<Divider mt="xs" />
+<Group justify="space-between">
+  <Text size="sm" c="dimmed">Total Activities</Text>
+  <Text size="sm" fw={700} c="violet.7">{pieData.reduce((a, b) => a + b.value, 0)}</Text>
+</Group>
+</Stack>
+</Group>
 )}
 </Paper>
 <Paper shadow="sm" radius="lg" p="xl" withBorder>
@@ -211,13 +239,34 @@ color={item.color} radius="xl" size="md" />
 <Title order={5} mb="md" c="gray.7">Region Engagement</Title>
 <Stack gap="xs">
 {Object.entries(regionMap).sort((a, b) => b[1] - a[1]).map(([region, count]) => (
-<Group key={region} justify="space-between">
+<Box key={region}>
+<Group justify="space-between">
 <Group gap="xs">
-<IconMapPin size={14} color="var(--mantine-color-violet-6)" />
+<IconMapPin size={14} color="var(--mantine-color-violet-6)" style={{ cursor: "pointer" }}
+onClick={() => setSelectedRegion(selectedRegion === region ? null : region)} />
 <Text size="sm">{region}</Text>
 </Group>
 <Badge color="violet" variant="light">{count} submissions</Badge>
 </Group>
+{selectedRegion === region && (
+<Box mt="sm" ml="md">
+<Divider mb="sm" />
+<Stack gap="xs">
+{submissions.filter((s) => s.region === region).map((s) => (
+<Paper key={s._id} p="sm" radius="md" withBorder>
+<Group justify="space-between">
+<Box>
+<Text size="sm" fw={500}>{s.workerName}</Text>
+<Text size="xs" c="dimmed">{s.activityType} · {s.location} · {dayjs(s.date).format("DD MMM YYYY")}</Text>
+</Box>
+<Badge color={STATUS_COLORS[s.status]} size="sm">{s.status}</Badge>
+</Group>
+</Paper>
+))}
+</Stack>
+</Box>
+)}
+</Box>
 ))}
 {Object.keys(regionMap).length === 0 && <Text c="dimmed" size="sm">No data</Text>}
 </Stack>
