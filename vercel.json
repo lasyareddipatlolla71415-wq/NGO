@@ -1,0 +1,5 @@
+{
+  "buildCommand": "cd \"Ngo field work\" && npm install && npm run build",
+  "outputDirectory": "Ngo field work/dist",
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+}
