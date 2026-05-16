@@ -5,7 +5,7 @@ import {
 } from "@mantine/core";
 import { IconLeaf, IconAlertCircle } from "@tabler/icons-react";
 import { useNavigate, Link } from "react-router-dom";
-import { useAuth } from "../Context/useAuth";
+import { useAuth } from "../context/useAuth";
 import { GoogleLogin } from "@react-oauth/google";
 import api from "../api/axios";
 
